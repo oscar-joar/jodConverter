@@ -1,0 +1,44 @@
+package com.myTest.demo.service;
+
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OfficeServiceImpl implements OfficeService {
+
+	private final JodService jodService;
+	private final String resourcesDirectory;
+	private final FileStorageService fileStorageService;
+
+	public OfficeServiceImpl(JodService jodService, FileStorageService fileStorageService,
+			@Value("${resources.directory}") String resourcesDirectory) {
+		this.jodService = jodService;
+		this.fileStorageService = fileStorageService;
+		this.resourcesDirectory = resourcesDirectory;
+	}
+
+	@Override
+	public void convertToPdf(HttpServletResponse response) throws Exception {
+		final Path path = Paths.get(resourcesDirectory + "/" + "myExcelFile.xlsx");
+		InputStream content = fileStorageService.content(path);
+
+		ByteArrayOutputStream bao = mediaConverterService.convert(content, Media.PDF.name());
+	      content = new ByteArrayInputStream(bao.toByteArray());
+
+	    response.addHeader(HttpHeaders.CONTENT_DISPOSITION,
+	            MessageFormat.format("attachment; filename=\"{0}\"",
+	                filename));
+	        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+	        response.setStatus(HttpServletResponse.SC_OK);
+
+	        IOUtils.copy(content, response.getOutputStream());
+
+	}
+
+}

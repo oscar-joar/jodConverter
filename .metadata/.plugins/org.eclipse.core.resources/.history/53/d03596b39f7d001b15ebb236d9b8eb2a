@@ -1,0 +1,30 @@
+package com.myTest.demo.service;
+
+import java.nio.file.Paths;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OfficeServiceImpl implements OfficeService{
+
+	private final JodService jodService;
+	private final String resourcesDirectory;
+
+	public OfficeServiceImpl(
+			JodService jodService,
+			@Value("${resources.directory}") String resourcesDirectory) {
+		this.jodService = jodService;
+		this.resourcesDirectory = resourcesDirectory;
+	}
+
+	@Override
+	public void convertToPdf(HttpServletResponse response) throws Exception {
+		final Path path = Paths.get(resourcesDirectory + "/" + "myExcelFile.xlsx");
+
+
+	}
+
+}

@@ -1,0 +1,20 @@
+package com.myTest.demo.controller;
+
+
+@RestController
+@RequestMapping(value = ResourceController.PATH)
+public class JodController {
+
+	  @GetMapping(value = ResourceController.VIEW + "/{id}" + "/{version}", produces = {
+		      MediaType.APPLICATION_OCTET_STREAM_VALUE
+		  })
+		  public ResponseEntity<Void> view(
+		      @PathVariable(value = "id", required = true) Long id,
+		      @PathVariable(value = "version", required = true) Integer version,
+		      HttpServletResponse response)
+		      throws Exception {
+		    resourceService.view(id, version, response);
+		    return new ResponseEntity<>(HttpStatus.OK);
+		  }
+
+}

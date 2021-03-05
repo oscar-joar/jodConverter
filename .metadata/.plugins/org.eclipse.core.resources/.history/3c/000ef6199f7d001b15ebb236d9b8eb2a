@@ -1,0 +1,23 @@
+package com.myTest.demo.service;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class OfficeServiceImpl implements OfficeService{
+
+	private final JodService jodService;
+
+	public OfficeServiceImpl(JodService jodService) {
+		this.jodService = jodService;
+
+	}
+
+	@Override
+	public void convertToPdf(HttpServletResponse response) throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+}

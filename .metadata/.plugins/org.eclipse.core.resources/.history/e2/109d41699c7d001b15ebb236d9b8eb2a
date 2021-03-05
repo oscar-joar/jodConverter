@@ -1,0 +1,22 @@
+package com.myTest.demo.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/api/jod")
+public class JodController {
+
+	  @GetMapping(value = "/convert", produces = {
+		      MediaType.APPLICATION_OCTET_STREAM_VALUE
+		  })
+		  public ResponseEntity<Void> view(
+		      @PathVariable(value = "id", required = true) Long id,
+		      @PathVariable(value = "version", required = true) Integer version,
+		      HttpServletResponse response)
+		      throws Exception {
+		    resourceService.view(id, version, response);
+		    return new ResponseEntity<>(HttpStatus.OK);
+		  }
+
+}

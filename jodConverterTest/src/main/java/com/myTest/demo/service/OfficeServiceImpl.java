@@ -1,0 +1,51 @@
+package com.myTest.demo.service;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.MessageFormat;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OfficeServiceImpl implements OfficeService {
+
+	private final JodService jodService;
+	private final String resourcesDirectory;
+	private final FileStorageService fileStorageService;
+
+	public OfficeServiceImpl(JodService jodService, FileStorageService fileStorageService,
+			@Value("${resources.directory}") String resourcesDirectory) {
+		this.jodService = jodService;
+		this.fileStorageService = fileStorageService;
+		this.resourcesDirectory = resourcesDirectory;
+	}
+
+	@Override
+	public void convertToPdf(HttpServletResponse response) throws Exception {
+		final Path path = Paths.get(resourcesDirectory + "/" + "file_example_XLSX_100.xlsx");
+		InputStream content = fileStorageService.content(path);
+
+		ByteArrayOutputStream bao = jodService.convert(content, "pdf");
+		content = new ByteArrayInputStream(bao.toByteArray());
+
+		String filename = "file_example_XLSX_100.pdf";
+
+		response.addHeader(HttpHeaders.CONTENT_DISPOSITION,
+				MessageFormat.format("attachment; filename=\"{0}\"", filename));
+		response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+		response.setStatus(HttpServletResponse.SC_OK);
+
+		IOUtils.copy(content, response.getOutputStream());
+
+	}
+
+}

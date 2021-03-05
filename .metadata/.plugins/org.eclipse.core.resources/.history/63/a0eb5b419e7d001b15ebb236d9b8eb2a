@@ -1,0 +1,5 @@
+package com.myTest.demo.service;
+
+public class OfficeServiceImpl implements OfficeService{
+
+}

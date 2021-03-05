@@ -1,0 +1,28 @@
+package com.myTest.demo.service;
+
+
+@Service
+public class JodServiceImpl implements JodService{
+
+	  @Autowired
+	  private DocumentConverter converter;
+
+	  @Override
+	  public ByteArrayOutputStream convert(InputStream inputStream, String targetExtension)
+	      throws Exception {
+
+	    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+	      final DocumentFormat targetFormat =
+	          DefaultDocumentFormatRegistry.getFormatByExtension(targetExtension);
+
+	      converter.convert(inputStream).to(baos).as(targetFormat).execute();
+
+	      return baos;
+	    } catch (OfficeException | IOException e) {
+	      throw new MediaConverterError(e.getMessage(), "mediaConverterError");
+	    }
+
+	  }
+
+}
